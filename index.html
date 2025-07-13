@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BuildBay — Seu Assistente de Montagem de PC</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 'DEFAULT': '#facc15', 'light': '#fde047', 'dark': '#eab308' },
+            dark: { '950': '#0c0a09', '900': '#18181b', '800': '#27272a', '700': '#3f3f46', '600': '#52525b' }
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Sora', 'sans-serif'] },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-in-up': 'slideInUp 0.5s ease-in-out',
+            'flash-border': 'flashBorder 0.7s ease-out'
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+            slideInUp: { '0%': { transform: 'translateY(20px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
+            flashBorder: {
+              '0%': { borderColor: '#3f3f46' },
+              '50%': { borderColor: '#facc15' },
+              '100%': { borderColor: '#3f3f46' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@700&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/feather-icons"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="font-sans antialiased tracking-tight leading-relaxed bg-dark-950 text-gray-200">
+    <div class="container mx-auto max-w-screen-2xl px-4 py-8">
+
+        <header class="text-center mb-12 animate-fade-in">
+          <h1 class="text-5xl md:text-6xl font-extrabold font-display bg-gradient-to-r from-yellow-400 to-amber-300 text-transparent bg-clip-text drop-shadow-[0_2px_4px_rgba(250,204,21,0.2)]">
+            BuildBay
+          </h1>
+          <p class="mt-3 text-gray-400 text-lg md:text-xl max-w-3xl mx-auto">
+            Seu <span class="text-white font-semibold">assistente inteligente</span> para planejar, comparar e montar o PC dos seus sonhos.
+          </p>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <aside class="w-full lg:w-1/4 xl:w-1/5 space-y-8 animate-slide-in-up">
+                <section class="p-4 bg-dark-900 rounded-xl border border-dark-800">
+                    <h2 class="text-xl font-bold mb-4 text-white flex items-center gap-2"><i data-feather="layers" class="text-brand"></i> Categorias</h2>
+                    <ul id="category-list" class="space-y-1"></ul>
+                </section>
+
+                <section class="p-4 bg-dark-900 rounded-xl border border-dark-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2"><i data-feather="filter" class="text-brand"></i> Marcas</h2>
+                        <button id="clear-filters-btn" class="text-xs text-gray-400 hover:text-brand font-semibold hidden">Limpar</button>
+                    </div>
+                    <div id="brand-filter" class="space-y-2 max-h-60 overflow-y-auto pr-2"></div>
+                </section>
+
+
+                <section class="p-4 bg-dark-900/80 backdrop-blur-sm rounded-xl border border-dark-700/80 sticky top-8">
+                    <h2 id="build-title" class="text-xl font-bold mb-4 text-white flex items-center gap-2"><i data-feather="shopping-cart" class="text-brand"></i> Minha Build</h2>
+                    <div id="build-list" class="space-y-3 max-h-[28rem] overflow-y-auto pr-2"></div>
+                    <div id="build-footer" class="hidden mt-4 pt-4 border-t border-dark-700">
+                         <div id="compatibility-warning" class="text-sm text-center bg-red-900/50 border border-red-700 text-amber-200 p-2 rounded-lg mb-3 hidden"></div>
+                         <div id="wattage-calculator" class="hidden text-sm space-y-2 mb-3">
+                            <div class="flex justify-between"><span class="text-gray-400">Consumo Estimado:</span><span id="build-wattage" class="font-semibold text-white">0W</span></div>
+                            <div class="flex justify-between items-center"><span class="text-gray-400">Potência da Fonte:</span><span id="psu-wattage" class="font-semibold text-white">N/A</span></div>
+                            <div id="wattage-status" class="text-center p-2 rounded-lg font-semibold"></div>
+                        </div>
+                         <div class="flex justify-between items-center">
+                            <span class="text-lg font-semibold text-gray-300">Total:</span><span id="build-total" class="text-2xl font-bold text-brand">R$ 0,00</span>
+                        </div>
+                        <button id="analyze-build-btn" class="mt-3 w-full text-sm bg-brand hover:bg-brand-dark text-black font-semibold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i data-feather="sparkles" class="w-4 h-4"></i> Analisar Minha Build
+                        </button>
+                        <button id="export-build-btn" class="mt-2 w-full text-sm bg-blue-800 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                             <i data-feather="copy" class="w-4 h-4"></i> Exportar Build
+                        </button>
+                        <button id="clear-build-btn" class="mt-2 w-full text-sm bg-red-800 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                            <i data-feather="trash-2" class="w-4 h-4"></i> Limpar Build
+                        </button>
+                    </div>
+                </section>
+            </aside>
+
+            <main class="w-full lg:w-3/4 xl:w-4/5 animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="mb-6 p-4 bg-dark-900 rounded-xl border border-dark-800 flex flex-wrap items-center gap-4">
+                    <div class="relative flex-grow min-w-[200px] md:flex-1">
+                        <i data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="search-bar" placeholder="Buscar por nome..." class="bg-dark-800 border border-dark-700 text-white text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 pl-10">
+                    </div>
+                    <div class="flex-grow min-w-[200px] md:flex-1">
+                         <select id="sort-by" class="bg-dark-800 border border-dark-700 text-white text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5">
+                            <option value="popularity">Ordenar por: Popularidade</option>
+                            <option value="price-asc">Ordenar por: Menor Preço</option>
+                            <option value="price-desc">Ordenar por: Maior Preço</option>
+                            <option value="name-asc">Ordenar por: Nome (A-Z)</option>
+                            <option value="name-desc">Ordenar por: Nome (Z-A)</option>
+                         </select>
+                    </div>
+                    <div class="flex-grow w-full md:w-auto md:flex-1 min-w-[200px]">
+                        <label for="price-filter" class="block mb-1 text-sm font-medium text-gray-300">Preço Máx: <span id="price-value" class="font-bold text-brand"></span></label>
+                        <input id="price-filter" type="range" min="0" max="15000" step="100" class="w-full h-2 bg-dark-700 rounded-lg appearance-none cursor-pointer accent-brand">
+                    </div>
+                    <div id="dynamic-filters-container" class="w-full flex flex-wrap items-center gap-4"></div>
+                </div>
+                <h2 id="grid-title" class="text-3xl font-bold mb-6 text-white font-display">Todos os Componentes</h2>
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                    <div id="loading-spinner" class="col-span-full text-center py-16 px-6 bg-dark-900 rounded-xl border border-dark-800">
+                        <i data-feather="loader" class="w-16 h-16 text-brand mx-auto mb-4 animate-spin"></i>
+                        <h3 class="text-2xl font-bold text-white font-display">Carregando produtos...</h3>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50 transition-opacity duration-300 animate-fade-in">
+        <div id="modal-content-box" class="bg-dark-900 rounded-2xl border border-dark-700 w-full max-w-4xl max-h-[90vh] flex flex-col animate-slide-in-up">
+            <header class="p-4 flex justify-between items-start gap-4 border-b border-dark-800">
+                <div id="modal-header-content" class="flex-grow">
+                    <div class="flex items-center gap-4">
+                        <img id="modal-brand-logo" src="" alt="Logo da Marca" class="h-8 object-contain">
+                        <h2 id="modal-title" class="text-2xl font-bold text-white font-display">Nome do Produto</h2>
+                    </div>
+                </div>
+                <button id="close-modal" class="text-gray-400 hover:text-white transition-colors">
+                    <i data-feather="x" class="w-8 h-8"></i>
+                </button>
+            </header>
+
+            <main id="modal-main-content" class="p-6 flex flex-col md:flex-row gap-6 overflow-y-auto">
+                <div class="w-full md:w-1/3">
+                    <img id="modal-image" src="" alt="Imagem do Produto" class="w-full rounded-lg object-contain">
+                </div>
+                <div class="w-full md:w-2/3 space-y-4">
+                    <div>
+                        <h3 class="font-bold text-lg text-brand mb-2 flex items-center gap-2"><i data-feather="tool"></i> Especificações</h3>
+                        <div id="modal-specs" class="specs-grid text-sm"></div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-brand mb-2 flex items-center gap-2"><i data-feather="dollar-sign"></i> Comparativo de Preços</h3>
+                        <div id="modal-price-comparison" class="space-y-2"></div>
+                    </div>
+                </div>
+            </main>
+
+            <footer id="modal-analysis-content" class="p-6 border-t border-dark-800 bg-dark-950/50 rounded-b-2xl">
+                <h3 class="font-bold text-lg text-brand mb-2 flex items-center gap-2"><i data-feather="sparkles"></i> Análise da IA</h3>
+                <div id="ai-analysis-output" class="text-gray-300 prose prose-invert prose-sm max-w-none"></div>
+            </footer>
+        </div>
+    </div>
+    <div id="toast-container" class="fixed bottom-8 right-8 z-[100] space-y-3"></div>
+
+    <template id="product-card-template">
+        <div class="product-card group bg-dark-900 rounded-xl border border-dark-800 flex flex-col overflow-hidden transition-all duration-300 hover:border-brand hover:shadow-2xl hover:shadow-brand/10 hover:-translate-y-1">
+            <div class="h-48 bg-dark-800 flex items-center justify-center overflow-hidden relative p-4 cursor-pointer" data-action="open-modal">
+              <img data-prop="image" loading="lazy" class="w-full h-full object-contain transition duration-300 ease-in-out group-hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/400x400/0c0a09/facc15?text=Erro';">
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+                <p data-prop="brand-category" class="text-brand/80 text-xs font-semibold uppercase tracking-wider"></p>
+                <h3 data-prop="name" class="font-bold text-lg text-white flex-grow mt-1 cursor-pointer" data-action="open-modal"></h3>
+                <p data-prop="extra-info" class="text-gray-400 text-sm mt-1 mb-3 h-10"></p>
+
+                <div data-prop="variants-container" class="mb-3"></div>
+
+                <p data-prop="price" class="text-2xl font-bold text-white mt-auto"></p>
+            </div>
+             <div class="p-4 pt-0">
+                 <button data-prop="add-btn" class="add-to-build-btn w-full bg-brand hover:bg-brand-dark text-black font-bold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2">
+                    <i data-feather="plus-circle" class="w-5 h-5"></i>
+                    <span>Adicionar à Build</span>
+                 </button>
+             </div>
+        </div>
+    </template>
+
+    <script defer src="assets/js/script.js"></script>
+</body>
+</html>

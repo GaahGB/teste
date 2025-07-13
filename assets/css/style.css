@@ -1,0 +1,156 @@
+:root {
+    --brand-color: #facc15;
+    --bg-dark: #0c0a09;
+    --text-light: #f3f4f6;
+    --text-muted: #9ca3af;
+    --zinc-800: #27272a;
+    --zinc-900: #18181b;
+    --brand-color-alpha: #facc1520;
+}
+
+/* Base Reset & Scrollbar */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+html {
+    min-height: 100%;
+    background-color: var(--bg-dark);
+    background-image: radial-gradient(at 0% 0%, hsla(280, 45%, 9%, 1) 0px, transparent 50%),
+                      radial-gradient(at 99% 1%, hsla(216, 70%, 12%, 1) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+body::-webkit-scrollbar {
+    width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--zinc-900);
+}
+
+body::-webkit-scrollbar-thumb {
+    background: var(--brand-color);
+    border-radius: 9999px;
+    border: 2px solid var(--zinc-900);
+}
+
+/* Body Styling */
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+/* Specific Filters Container */
+.specific-filters-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(-10px);
+    transition: all 0.4s ease-in-out;
+}
+
+.specific-filters-container.visible {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* NEW: Variant Selector Styling */
+.variant-selector {
+    width: 100%;
+    background-color: var(--zinc-800);
+    border: 1px solid var(--zinc-700);
+    color: var(--text-light);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.variant-selector:focus {
+    outline: none;
+    border-color: var(--brand-color);
+    box-shadow: 0 0 0 2px var(--brand-color-alpha);
+}
+
+/* Modal Product Specs Grid Layout */
+.specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 6px 20px; /* row-gap column-gap */
+}
+
+.spec-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.spec-item .spec-key {
+    font-weight: 600;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.spec-item .spec-value {
+    text-align: right;
+    font-weight: 500;
+}
+
+/* Toast Notification Animation */
+@keyframes slide-in-toast {
+    from {
+        transform: translateX(calc(100% + 2rem));
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes fade-out-toast {
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+.toast-in {
+    animation: slide-in-toast 0.5s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+.toast-out {
+    animation: fade-out-toast 0.5s ease-out forwards;
+}
+
+/* General Polish */
+.add-to-build-btn {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.add-to-build-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(250, 204, 21, 0.1), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.flash-border-animation {
+  animation: flashBorder 0.7s ease-out;
+}
+
+@keyframes flashBorder {
+  0%, 100% { border-color: #3f3f46; } /* var(--dark-700) */
+  50% { border-color: #facc15; } /* var(--brand-color) */
+}
